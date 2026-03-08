@@ -10,8 +10,6 @@ class MovieListPage extends StatelessWidget {
         - gunakan ListView.builder untuk menampilkan list movie
         - setiap item movie ditampilkan menggunakan Card widget yang berisi judul movie dan poster movie
         - ketika item movie ditekan, navigasikan ke halaman MovieDetailPage dengan membawa data movie yang dipilih
-        
-    
      */
     return const Placeholder();
   }
