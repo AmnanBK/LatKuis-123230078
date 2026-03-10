@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:latihan_kuis_a/models/movie_model.dart';
 import 'package:latihan_kuis_a/models/saved_movies.dart';
+import 'package:latihan_kuis_a/screen/movie_detail.dart';
 
 class MovieListPage extends StatelessWidget {
   final String username;
@@ -44,20 +45,30 @@ class _MovieCardState extends State<_MovieCard> {
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          children: [
-            _MoviePoster(imgUrl: widget.movie.imgUrl),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _MovieInfo(
-                movie: widget.movie,
-                isSaved: isSaved,
-                onBookmarkPressed: toggleBookmark,
-              ),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MovieDetailPage(movie: widget.movie),
             ),
-          ],
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              _MoviePoster(imgUrl: widget.movie.imgUrl),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _MovieInfo(
+                  movie: widget.movie,
+                  isSaved: isSaved,
+                  onBookmarkPressed: toggleBookmark,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
