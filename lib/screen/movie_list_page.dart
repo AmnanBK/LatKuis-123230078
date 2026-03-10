@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:latihan_kuis_a/models/movie_model.dart';
+import 'package:latihan_kuis_a/models/saved_movies.dart';
 
 class MovieListPage extends StatelessWidget {
-  const MovieListPage({super.key});
+  final String username;
+
+  const MovieListPage({super.key, required this.username});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Movies")),
+      appBar: AppBar(title: Text("Welcome, $username")),
       body: ListView.builder(
         itemCount: movieList.length,
         itemBuilder: (context, index) {
@@ -19,22 +22,41 @@ class MovieListPage extends StatelessWidget {
   }
 }
 
-class _MovieCard extends StatelessWidget {
+class _MovieCard extends StatefulWidget {
   final MovieModel movie;
 
   const _MovieCard({required this.movie});
 
   @override
+  State<_MovieCard> createState() => _MovieCardState();
+}
+
+class _MovieCardState extends State<_MovieCard> {
+  void toggleBookmark() {
+    setState(() {
+      SavedMovies.toggle(widget.movie);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final isSaved = SavedMovies.isSaved(widget.movie);
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
           children: [
-            _MoviePoster(imgUrl: movie.imgUrl),
+            _MoviePoster(imgUrl: widget.movie.imgUrl),
             const SizedBox(width: 12),
-            Expanded(child: _MovieInfo(movie: movie)),
+            Expanded(
+              child: _MovieInfo(
+                movie: widget.movie,
+                isSaved: isSaved,
+                onBookmarkPressed: toggleBookmark,
+              ),
+            ),
           ],
         ),
       ),
@@ -58,15 +80,25 @@ class _MoviePoster extends StatelessWidget {
 
 class _MovieInfo extends StatelessWidget {
   final MovieModel movie;
+  final bool isSaved;
+  final VoidCallback onBookmarkPressed;
 
-  const _MovieInfo({required this.movie});
+  const _MovieInfo({
+    required this.movie,
+    required this.isSaved,
+    required this.onBookmarkPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _MovieTitleRow(movie: movie),
+        _MovieTitleRow(
+          movie: movie,
+          isSaved: isSaved,
+          onBookmarkPressed: onBookmarkPressed,
+        ),
         const SizedBox(height: 4),
         Text(movie.genre, style: TextStyle(color: Colors.grey[700])),
         const SizedBox(height: 6),
@@ -78,8 +110,14 @@ class _MovieInfo extends StatelessWidget {
 
 class _MovieTitleRow extends StatelessWidget {
   final MovieModel movie;
+  final bool isSaved;
+  final VoidCallback onBookmarkPressed;
 
-  const _MovieTitleRow({required this.movie});
+  const _MovieTitleRow({
+    required this.movie,
+    required this.isSaved,
+    required this.onBookmarkPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +129,11 @@ class _MovieTitleRow extends StatelessWidget {
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
         ),
-        IconButton(onPressed: () {}, icon: Icon(Icons.bookmark_border)),
+        IconButton(
+          onPressed: onBookmarkPressed,
+          icon: Icon(isSaved ? Icons.bookmark : Icons.bookmark_border),
+          color: isSaved ? Colors.blue : Colors.grey,
+        ),
       ],
     );
   }

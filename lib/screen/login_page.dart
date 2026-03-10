@@ -25,7 +25,9 @@ class _LoginPageState extends State<LoginPage> {
       );
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => MovieListPage()),
+        MaterialPageRoute(
+          builder: (context) => MovieListPage(username: username),
+        ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
